@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 
         $.ajax({
-            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityName},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityName},CT,USA&units=imperial&appid=${process.env.API_KEY}`,
             method: 'get',
             dataType: 'json',
             success: function (data) {
@@ -17,12 +17,18 @@ $(document).ready(function () {
 
 
                 $.ajax({
-                    url: `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+                    url: `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${process.env.API_KEY}`,
                     method: 'get',
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
                         console.log(data.list)
+
+
+                        const infos = data.list
+                        for (const index in infos) {
+                            console.log(infos[index]["dt_txt"])
+                        };
 
 
                         const iconCode0 = data.list[0].weather[0].icon
@@ -72,3 +78,5 @@ $(document).ready(function () {
     };
 
 });
+
+//create input for adding state code
