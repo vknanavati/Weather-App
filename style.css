@@ -42,7 +42,7 @@
     padding: 10px;
 }
 
-.forecast-box {
+#forecast div {
     width: 400px;
     height: 300px;
     background: linear-gradient(#12d0f1, blue);
