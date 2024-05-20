@@ -1,3 +1,5 @@
+// const myKey = config.MY_KEY
+
 const STATE = {
     route: 'landingPage'
 }
@@ -15,45 +17,59 @@ const setState = (newItem, currentState = STATE) => {
 
 /* ---------- TEMPLATES ---------- */
 
+const searchWeatherPage = (`
+    <div class="search-container">
+        <form class="search-box">
+            <input class="city" id="myText" type="text" />
+            <button type="submit" id="mySubmit">Enter</button>
+        </form>
+    </div>
+`)
 
 
 /* ---------- RENDER FUNCTION ---------- */
 
 
+const renderWeatherPage = () => {
+    $('#input').html(searchWeatherPage);
+};
 
+const render = () => {
+    renderWeatherPage();
+}
 /* ---------- AJAX REQUEST ---------- */
-let cityName;
-document.getElementById("mySubmit").onclick = function () {
-    cityName = document.getElementById("myText").value
+
+
+const getGeoData = (query) => {
+    console.log('user city:', query)
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${cityName},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${api_key}`,
         success: data => {
-            console.log(data);
-            const lat = data[0].lat;
-            const lon = data[0].lon;
-            $("#result-city").html(data[0].name);
+            console.log(data)
         },
-        error: err => {
-            console.log(err)
+        error: function (err) {
+            console.log(err);
         }
     }
+    $.ajax(options);
 }
-
-$.ajax(options);
-
-
-
 
 
 /* ---------- EVENT HANDLERS---------- */
 
+const inputHandler = event => {
+    event.preventDefault();
+    const cityName = $(event.currentTarget).find('.city').val();
+    console.log('cityName: ', cityName);
+    getGeoData(cityName);
 
+}
 
 /* ---------- EVENT LISTENERS ---------- */
 
-
+$('body').on('submit', '.search-box', event => inputHandler(event));
 
 /* ---------- LOAD PAGE ---------- */
 $(render)
