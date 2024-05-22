@@ -45,7 +45,7 @@ const getGeoData = (query) => {
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${api_key}`,
+        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
         success: data => {
             console.log(data);
             // const lat = data[0].lat;
@@ -71,7 +71,7 @@ const getWeather = () => {
 
     const options = {
         type: 'GET',
-        "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=${api_key}}`,
+        "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
         success: data => {
             console.log('weather data: ', data);
         },
