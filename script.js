@@ -45,15 +45,37 @@ const getGeoData = (query) => {
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${api_key}`,
+        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
         success: data => {
-            console.log(data)
+            console.log(data);
+            // const lat = data[0].lat;
+            // const lon = data[0].lon;
+            // console.log(lat);
+            // console.log(lon);
+            getLon(data);
+            getLat(data);
         },
         error: function (err) {
             console.log(err);
         }
     }
     $.ajax(options);
+}
+
+function getLon(data) {
+    const lon = data[0].lon;
+    console.log(lon);
+    return lon;
+
+}
+
+function getLat(data) {
+    const lat = data[0].lat;
+    console.log(lat);
+    return lat;
+
+
+
 }
 
 
