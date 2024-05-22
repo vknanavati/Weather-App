@@ -45,7 +45,7 @@ const getGeoData = (query) => {
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${api_key}`,
         success: data => {
             console.log(data);
             // const lat = data[0].lat;
@@ -60,18 +60,38 @@ const getGeoData = (query) => {
         }
     }
     $.ajax(options);
+    getWeather();
+}
+
+const getWeather = () => {
+    const valueLat = getLat();
+    console.log('valueLat: ', valueLat)
+    const valueLon = getLon();
+    console.log('valueLon: ', valueLon);
+
+    const options = {
+        type: 'GET',
+        "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=${api_key}}`,
+        success: data => {
+            console.log('weather data: ', data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    }
+    $.ajax(options);
 }
 
 function getLon(data) {
     const lon = data[0].lon;
-    console.log(lon);
+    console.log('Longitude: ', lon);
     return lon;
 
 }
 
 function getLat(data) {
     const lat = data[0].lat;
-    console.log(lat);
+    console.log('Latitude: ', lat);
     return lat;
 
 
@@ -86,6 +106,7 @@ const inputHandler = event => {
     const cityName = $(event.currentTarget).find('.city').val();
     console.log('cityName: ', cityName);
     getGeoData(cityName);
+
 
 }
 
