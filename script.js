@@ -48,26 +48,26 @@ const getGeoData = (query) => {
         "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
         success: data => {
             console.log(data);
-            // const lat = data[0].lat;
-            // const lon = data[0].lon;
-            // console.log(lat);
-            // console.log(lon);
-            getLon(data);
-            getLat(data);
+            const resp = {
+                lat: data[0].lat,
+                lon: data[0].lon
+            }
+            getWeather(JSON.stringify(resp))
+            return data;
         },
         error: function (err) {
             console.log(err);
         }
     }
-    $.ajax(options);
-    getWeather();
+    $.ajax(options)
 }
 
 const getWeather = () => {
-    const valueLat = getLat();
-    console.log('valueLat: ', valueLat)
-    const valueLon = getLon();
-    console.log('valueLon: ', valueLon);
+    console.log(`Second call: ${data}`)
+    const valueLat = data.lat
+    // console.log('valueLat: ', valueLat)
+    const valueLon = data.lon;
+    // console.log('valueLon: ', valueLon);
 
     const options = {
         type: 'GET',
@@ -82,17 +82,17 @@ const getWeather = () => {
     $.ajax(options);
 }
 
-function getLon(data) {
-    const lon = data[0].lon;
-    console.log('Longitude: ', lon);
-    return lon;
+// function getLon(data) {
+//     const lon = data[0].lon;
+//     console.log('Longitude: ', lon);
+//     return lon;
 
-}
+// }
 
-function getLat(data) {
-    const lat = data[0].lat;
-    console.log('Latitude: ', lat);
-    return lat;
+// function getLat(data) {
+//     const lat = data[0].lat;
+//     console.log('Latitude: ', lat);
+//     return lat;
 
 
 
