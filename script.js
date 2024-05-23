@@ -1,4 +1,4 @@
-// const myKey = config.MY_KEY
+const API_KEY = 'e6d7ae5f1ecb4b18940c284e8e5da8f9'
 
 const STATE = {
     route: 'landingPage'
@@ -45,7 +45,7 @@ const getGeoData = (query) => {
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log(data);
             const resp = {
@@ -62,16 +62,20 @@ const getGeoData = (query) => {
     $.ajax(options)
 }
 
-const getWeather = () => {
+const getWeather = (data) => {
     console.log(`Second call: ${data}`)
-    const valueLat = data.lat
-    // console.log('valueLat: ', valueLat)
-    const valueLon = data.lon;
-    // console.log('valueLon: ', valueLon);
+    console.log(data)
+    const dataParse = JSON.parse(data)
+    console.log(dataParse)
+
+    const valueLat = dataParse.lat
+    console.log('valueLat: ', valueLat)
+    const valueLon = dataParse.lon;
+    console.log('valueLon: ', valueLon);
 
     const options = {
         type: 'GET',
-        "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=e6d7ae5f1ecb4b18940c284e8e5da8f9`,
+        "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log('weather data: ', data);
         },
@@ -82,21 +86,7 @@ const getWeather = () => {
     $.ajax(options);
 }
 
-// function getLon(data) {
-//     const lon = data[0].lon;
-//     console.log('Longitude: ', lon);
-//     return lon;
 
-// }
-
-// function getLat(data) {
-//     const lat = data[0].lat;
-//     console.log('Latitude: ', lat);
-//     return lat;
-
-
-
-}
 
 
 /* ---------- EVENT HANDLERS---------- */
