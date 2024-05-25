@@ -26,17 +26,17 @@ const searchWeatherPage = (`
     </div>
 `)
 
-const displaySevenDay = (`
-   
-    <div class="forecast-box" id="box1"></div>
-    <div class="forecast-box" id="box2"></div>
-    <div class="forecast-box" id="box3"></div>
-    <div class="forecast-box" id="box4"></div>
-    <div class="forecast-box" id="box5"></div>
-    <div class="forecast-box" id="box6"></div>
-    <div class="forecast-box" id="box7"></div>
+// const displaySevenDay = (`
 
-`)
+//     <div class="forecast-box" id="box1"></div>
+//     <div class="forecast-box" id="box2"></div>
+//     <div class="forecast-box" id="box3"></div>
+//     <div class="forecast-box" id="box4"></div>
+//     <div class="forecast-box" id="box5"></div>
+//     <div class="forecast-box" id="box6"></div>
+//     <div class="forecast-box" id="box7"></div>
+
+// `)
 
 
 /* ---------- RENDER FUNCTION ---------- */
@@ -59,8 +59,29 @@ const renderCurrentWeather = response => {
     $("#result-temp").html(dataParse.list[0].main.temp_max + "° F");
 };
 
-const renderSevenDay = () => {
-    $('#forecast').html(displaySevenDay)
+const renderSevenDay = response => {
+    const dataParse = JSON.parse(response);
+    // $('#forecast').html(displaySevenDay);
+    const infos = dataParse.list
+    const dates_arr = []
+    const tempMaxArr = []
+    const n = 9;
+    for (let i = 1; i < n; i++) {
+        dates_arr.push(infos[i]["dt_txt"]);
+        tempMaxArr.push(infos[i]["main"]["temp_max"])
+    }
+    console.log(dates_arr)
+    console.log(tempMaxArr)
+    let html = "";
+    let maxTemp = "";
+
+    for (let i = 0; i < 8; ++i) {
+        html += `<div class=box${i}>` + dates_arr[i] + '</div>';
+        maxTemp += '<div>' + tempMaxArr[i] + '</div>';
+        // $(`box${i}`).append(maxTemp);
+    }
+    $("#forecast").append(html)
+
 }
 
 const render = () => {
@@ -108,7 +129,7 @@ const getWeather = (data) => {
         success: data => {
             console.log('weather data: ', data);
             renderCurrentWeather(JSON.stringify(data))
-            renderSevenDay();
+            renderSevenDay(JSON.stringify(data));
         },
         error: function (err) {
             console.log(err);
