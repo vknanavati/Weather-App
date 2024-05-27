@@ -63,25 +63,40 @@ const renderSevenDay = response => {
     const dataParse = JSON.parse(response);
     // $('#forecast').html(displaySevenDay);
     const infos = dataParse.list
+    // const iconCode = data.list[1].weather[0].icon
+    // const iconImage = document.createElement("img");
+    // iconImage.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    // $("#icon1").append(iconImage);
+
     const dates_arr = []
     const tempMaxArr = []
-    const n = 9;
+    const tempMinArr = []
+    const iconCode = []
+    const n = 8;
     for (let i = 1; i < n; i++) {
         dates_arr.push(infos[i]["dt_txt"]);
         tempMaxArr.push(infos[i]["main"]["temp_max"])
+        tempMinArr.push(infos[i]["main"]["temp_min"])
+        iconCode.push(infos[i]["weather"][0]["icon"])
     }
     console.log(dates_arr)
     console.log(tempMaxArr)
-    let html = "";
-    let maxTemp = "";
+    console.log(tempMinArr)
+    console.log(iconCode)
 
-    for (let i = 0; i < 8; ++i) {
-        html += `<div class=box${i}>` + dates_arr[i] + '</div>';
-        maxTemp += '<div>' + tempMaxArr[i] + '</div>';
-        // $(`box${i}`).append(maxTemp);
+    let html = "";
+    // let maxTemp = "";
+    for (let i = 0; i < 7; ++i) {
+
+        html += `
+            <div class="box${i}">
+                <p>${dates_arr[i]}</p>
+                <img src= "https://openweathermap.org/img/wn/${iconCode[i]}@2x.png"/>
+                <p>${tempMaxArr[i]}/${tempMinArr[i]}°F</p>
+            </div>
+        `
     }
     $("#forecast").append(html)
-
 }
 
 const render = () => {
