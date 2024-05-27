@@ -13,14 +13,11 @@
     text-align: center;
 }
 
-.today-box {
+.today-container {
     width: 500px;
     height: 500px;
     margin: 100px auto;
     background: skyblue;
-}
-
-.today-result {
     text-align: center;
     line-height: 70px;
     font-size: 50px;
