@@ -13,65 +13,35 @@ const setState = (newItem, currentState = STATE) => {
 }
 /* ---------- TEMPLATE HELPERS ---------- */
 
-
-
-/* ---------- TEMPLATES ---------- */
-
-const searchWeatherPage = (`
-    <div class="search-container">
-        <form class="search-box">
-            <input class="city" id="myText" type="text" />
-            <button type="submit" id="mySubmit">Enter</button>
-        </form>
-    </div>
-`)
-
-// const displaySevenDay = (`
-
-//     <div class="forecast-box" id="box1"></div>
-//     <div class="forecast-box" id="box2"></div>
-//     <div class="forecast-box" id="box3"></div>
-//     <div class="forecast-box" id="box4"></div>
-//     <div class="forecast-box" id="box5"></div>
-//     <div class="forecast-box" id="box6"></div>
-//     <div class="forecast-box" id="box7"></div>
-
-// `)
-
-
-/* ---------- RENDER FUNCTION ---------- */
-
-
-const renderWeatherPage = () => {
-    $('#input').html(searchWeatherPage);
-};
-
-const renderCurrentWeather = response => {
-    // console.log(response)
+const createTodayData = response => {
     const dataParse = JSON.parse(response);
     console.log(dataParse.city.name);
-    $('#result-city').html(dataParse.city.name);
+    const cityName = dataParse.city.name;
     const iconCode = dataParse.list[0].weather[0].icon;
-    const iconImage = document.createElement("img");
-    iconImage.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    $("#result-icon").append(iconImage);
-    $("#result-description").html(dataParse.list[0].weather[0].description);
-    $("#result-temp").html(dataParse.list[0].main.temp_max + "° F");
-};
+    const currentDescription = dataParse.list[0].weather[0].description;
+    const currentTemp = dataParse.list[0].main.temp_max + "° F";
 
-const renderSevenDay = response => {
+    return (`
+        <div class="today-container">
+            <div class="today-result" id="result-city">${cityName}</div>
+            <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
+            <br>
+            <br>
+            <div class="today-result" id="result-description">${currentDescription}</div>
+            <div class="today-result" id="result-temp">${currentTemp}</div>
+        </div>
+    `)
+}
+
+const createForecastData = response => {
     const dataParse = JSON.parse(response);
-    // $('#forecast').html(displaySevenDay);
     const infos = dataParse.list
-    // const iconCode = data.list[1].weather[0].icon
-    // const iconImage = document.createElement("img");
-    // iconImage.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    // $("#icon1").append(iconImage);
 
     const dates_arr = []
     const tempMaxArr = []
     const tempMinArr = []
     const iconCode = []
+
     const n = 8;
     for (let i = 1; i < n; i++) {
         dates_arr.push(infos[i]["dt_txt"]);
@@ -85,7 +55,6 @@ const renderSevenDay = response => {
     console.log(iconCode)
 
     let html = "";
-    // let maxTemp = "";
     for (let i = 0; i < 7; ++i) {
 
         html += `
@@ -99,9 +68,36 @@ const renderSevenDay = response => {
     $("#forecast").append(html)
 }
 
+/* ---------- TEMPLATES ---------- */
+
+const searchWeatherPage = (`
+    <div class="search-container">
+        <form class="search-box">
+            <input class="city" id="myText" type="text" />
+            <button type="submit" id="mySubmit">Enter</button>
+        </form>
+    </div>
+`)
+
+/* ---------- RENDER FUNCTION ---------- */
+
+
+const renderWeatherPage = () => {
+    $('#input').html(searchWeatherPage);
+};
+
+const renderCurrentWeather = response => {
+    const currentWeather = createTodayData(response)
+    $('#today').html(currentWeather)
+};
+
+const renderSevenDay = response => {
+    createForecastData(response)
+};
+
 const render = () => {
     renderWeatherPage();
-}
+};
 /* ---------- AJAX REQUEST ---------- */
 
 
@@ -153,9 +149,6 @@ const getWeather = (data) => {
     $.ajax(options);
 }
 
-
-
-
 /* ---------- EVENT HANDLERS---------- */
 
 const inputHandler = event => {
@@ -163,8 +156,6 @@ const inputHandler = event => {
     const cityName = $(event.currentTarget).find('.city').val();
     console.log('cityName: ', cityName);
     getGeoData(cityName);
-
-
 }
 
 /* ---------- EVENT LISTENERS ---------- */
