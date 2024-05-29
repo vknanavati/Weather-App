@@ -45,9 +45,9 @@ const createForecastData = response => {
     const n = 8;
     for (let i = 1; i < n; i++) {
         dates_arr.push(infos[i]["dt_txt"]);
-        tempMaxArr.push(infos[i]["main"]["temp_max"])
-        tempMinArr.push(infos[i]["main"]["temp_min"])
-        iconCode.push(infos[i]["weather"][0]["icon"])
+        tempMaxArr.push(infos[i]["main"]["temp_max"]);
+        tempMinArr.push(infos[i]["main"]["temp_min"]);
+        iconCode.push(infos[i]["weather"][0]["icon"]);
     }
     console.log(dates_arr)
     console.log(tempMaxArr)
@@ -69,6 +69,12 @@ const createForecastData = response => {
 }
 
 /* ---------- TEMPLATES ---------- */
+
+const landingPage = (`
+<div class="sunshine-container">
+    <div><img src="weather.png" alt="clouds and sunshine" id="weather-image"></div>
+</div>
+`)
 
 const searchWeatherPage = (`
     <div class="search-container">
@@ -92,11 +98,21 @@ const renderCurrentWeather = response => {
 };
 
 const renderSevenDay = response => {
-    createForecastData(response)
+    $('#forecast').html('');
+    createForecastData(response);
 };
+
+const renderLandingPage = () => {
+    $('#sunshine').html(landingPage);
+}
 
 const render = () => {
     renderWeatherPage();
+    if (STATE.route === 'todayPage') {
+        $("#sunshine").remove();
+    } else {
+        renderLandingPage()
+    }
 };
 /* ---------- AJAX REQUEST ---------- */
 
@@ -156,6 +172,7 @@ const inputHandler = event => {
     const cityName = $(event.currentTarget).find('.city').val();
     console.log('cityName: ', cityName);
     getGeoData(cityName);
+    setState({ route: 'todayPage' });
 }
 
 /* ---------- EVENT LISTENERS ---------- */
