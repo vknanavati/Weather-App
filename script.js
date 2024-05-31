@@ -19,11 +19,17 @@ const createTodayData = response => {
     const cityName = dataParse.city.name;
     const iconCode = dataParse.list[0].weather[0].icon;
     const currentDescription = dataParse.list[0].weather[0].description;
-    const currentTemp = dataParse.list[0].main.temp_max + "° F";
+    const currentTemp = dataParse.list[0].main.temp.toFixed(1) + "° F";
+    const currentDate = dataParse.list[0].dt_txt.slice(0, 10)
+    const resultDate = Date(currentDate.slice())
+
+    console.log(`current date: ${currentDate}`)
+    console.log(`result date: ${resultDate}`)
 
     return (`
         <div class="today-container">
             <div class="today-result" id="result-city">${cityName}</div>
+            <div class="today-result" id="result-date"></div>
             <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
             <br>
             <br>
@@ -45,8 +51,8 @@ const createForecastData = response => {
     const n = 8;
     for (let i = 1; i < n; i++) {
         dates_arr.push(infos[i]["dt_txt"]);
-        tempMaxArr.push(infos[i]["main"]["temp_max"]);
-        tempMinArr.push(infos[i]["main"]["temp_min"]);
+        tempMaxArr.push(infos[i]["main"]["temp_max"].toFixed(1));
+        tempMinArr.push(infos[i]["main"]["temp_min"].toFixed(1));
         iconCode.push(infos[i]["weather"][0]["icon"]);
     }
     console.log(dates_arr)
