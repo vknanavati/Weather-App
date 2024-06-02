@@ -21,7 +21,7 @@ const createTodayData = response => {
     const currentDescription = dataParse.list[0].weather[0].description;
     const currentTemp = dataParse.list[0].main.temp.toFixed(1) + "° F";
     const currentDate = dataParse.list[0].dt_txt.slice(0, 10)
-    const resultDate = Date(currentDate.slice())
+    const resultDate = new Date().toDateString(currentDate)
 
     console.log(`current date: ${currentDate}`)
     console.log(`result date: ${resultDate}`)
@@ -42,6 +42,21 @@ const createTodayData = response => {
 const createForecastData = response => {
     const dataParse = JSON.parse(response);
     const infos = dataParse.list
+
+    const day1Arr = []
+
+    const day1 = dataParse.list[0].dt_txt.slice(0, 10)
+    console.log(`day 1: ${day1}`)
+    const dateobj = new Date(day1)
+    const B = dateobj.toISOString();
+    console.log(`B: ${B}`)
+
+
+    const day_1 = new Date(new Date().toISOString())
+    const day_2 = new Date(new Date().setHours(24, 0, 0, 0)).toISOString()
+    const day_3 = new Date(new Date().setHours(48, 0, 0, 0)).toISOString()
+    const day_4 = new Date(new Date().setHours(72, 0, 0, 0)).toISOString()
+    const day_5 = new Date(new Date().setHours(96, 0, 0, 0)).toISOString()
 
     const dates_arr = []
     const tempMaxArr = []
@@ -128,7 +143,7 @@ const getGeoData = (query) => {
 
     const options = {
         type: 'GET',
-        "url": `http://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${API_KEY}`,
+        "url": `https://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log(data);
             const resp = {
