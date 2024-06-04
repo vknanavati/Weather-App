@@ -43,20 +43,114 @@ const createForecastData = response => {
     const dataParse = JSON.parse(response);
     const infos = dataParse.list
 
-    const day1Arr = []
+    const dates_1_arr = []
+    const tempMax1 = []
+    const dates_2_arr = []
+    const tempMax2 = []
+    const dates_3_arr = []
+    const tempMax3 = []
+    const dates_4_arr = []
+    const tempMax4 = []
+    const dates_5_arr = []
+    const tempMax5 = []
 
-    const day1 = dataParse.list[0].dt_txt.slice(0, 10)
-    console.log(`day 1: ${day1}`)
-    const dateobj = new Date(day1)
-    const B = dateobj.toISOString();
-    console.log(`B: ${B}`)
+    // const day_1 = new Date(new Date().toISOString())
+    // console.log(day_1)
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const day_1 = `${year}-${month}-${day}`;
+    console.log(`day_1: ${day_1}`);
+
+    const day_2 = new Date(new Date().setHours(24, 0, 0, 0)).toISOString().slice(0, 10)
+    console.log(`day_2: ${day_2}`)
+    const day_3 = new Date(new Date().setHours(48, 0, 0, 0)).toISOString().slice(0, 10)
+    console.log(`day_3: ${day_3}`)
+    const day_4 = new Date(new Date().setHours(72, 0, 0, 0)).toISOString().slice(0, 10)
+    console.log(`day_4: ${day_4}`)
+    const day_5 = new Date(new Date().setHours(96, 0, 0, 0)).toISOString().slice(0, 10)
+    console.log(`day_5: ${day_5}`)
+
+    const no = 39;
+    for (let i = 0; i < no; i++) {
+        if (infos[i]["dt_txt"].slice(0, 10) === day_1) {
+            dates_1_arr.push(infos[i]["dt_txt"]);
+            tempMax1.push(infos[i]["main"]["temp_max"].toFixed(1));
+        } else {
+            if (infos[i]["dt_txt"].slice(0, 10) === day_2) {
+                dates_2_arr.push(infos[i]["dt_txt"]);
+                tempMax2.push(infos[i]["main"]["temp_max"].toFixed(1));
+            } else {
+                if (infos[i]["dt_txt"].slice(0, 10) === day_3) {
+                    dates_3_arr.push(infos[i]["dt_txt"]);
+                    tempMax3.push(infos[i]["main"]["temp_max"].toFixed(1));
+                } else {
+                    if (infos[i]["dt_txt"].slice(0, 10) === day_4) {
+                        dates_4_arr.push(infos[i]["dt_txt"]);
+                        tempMax4.push(infos[i]["main"]["temp_max"].toFixed(1));
+                    } else {
+                        if (infos[i]["dt_txt"].slice(0, 10) === day_5) {
+                            dates_5_arr.push(infos[i]["dt_txt"]);
+                            tempMax5.push(infos[i]["main"]["temp_max"].toFixed(1));
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+    console.log(`dates_1_arr: ${dates_1_arr}`)
+    console.log(`dates_2_arr: ${dates_2_arr}`)
+    console.log(dates_2_arr)
+    console.log(`dates_3_arr: ${dates_3_arr}`)
+    console.log(`dates_4_arr: ${dates_4_arr}`)
+    console.log(`dates_5_arr: ${dates_5_arr}`)
+    console.log(`tempMax1: ${tempMax1}`)
+    console.log(`tempMax2: ${tempMax2}`)
+    console.log(tempMax2)
+    console.log(`tempMax3: ${tempMax3}`)
+    console.log(`tempMax4: ${tempMax4}`)
+    console.log(`tempMax5: ${tempMax5}`)
 
 
-    const day_1 = new Date(new Date().toISOString())
-    const day_2 = new Date(new Date().setHours(24, 0, 0, 0)).toISOString()
-    const day_3 = new Date(new Date().setHours(48, 0, 0, 0)).toISOString()
-    const day_4 = new Date(new Date().setHours(72, 0, 0, 0)).toISOString()
-    const day_5 = new Date(new Date().setHours(96, 0, 0, 0)).toISOString()
+    function createWeatherDates(dayArray, dayLabel) {
+        // Extract the date part
+        const date = dayArray[0].split(' ')[0];
+
+        // Define the time slots mapping
+        const timeSlots = {
+            "00:00:00": "12am",
+            "03:00:00": "3am",
+            "06:00:00": "6am",
+            "09:00:00": "9am",
+            "12:00:00": "12pm",
+            "15:00:00": "3pm",
+            "18:00:00": "6pm",
+            "21:00:00": "9pm"
+        };
+
+        // Create the day object
+        const dayObject = { date };
+
+        // Fill the time slots with empty objects
+        dayArray.forEach(timeString => {
+            const time = timeString.split(' ')[1];
+            dayObject[timeSlots[time]] = {};
+        });
+
+        return { [dayLabel]: dayObject };
+    }
+
+    // Create weather_dates object
+    const weather_dates = {
+        ...createWeatherDates(dates_2_arr, 'day2'),
+        ...createWeatherDates(dates_3_arr, 'day3')
+    };
+
+    console.log(weather_dates);
+
 
     const dates_arr = []
     const tempMaxArr = []
@@ -65,7 +159,7 @@ const createForecastData = response => {
 
     const n = 8;
     for (let i = 1; i < n; i++) {
-        dates_arr.push(infos[i]["dt_txt"]);
+        dates_arr.push(infos[i]["dt_txt"].slice(0, 10));
         tempMaxArr.push(infos[i]["main"]["temp_max"].toFixed(1));
         tempMinArr.push(infos[i]["main"]["temp_min"].toFixed(1));
         iconCode.push(infos[i]["weather"][0]["icon"]);
