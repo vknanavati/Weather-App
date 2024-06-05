@@ -45,17 +45,21 @@ const createForecastData = response => {
 
     const dates_1_arr = []
     const tempMax1 = []
+    const tempMin1 = []
     const dates_2_arr = []
     const tempMax2 = []
+    const tempMin2 = []
     const dates_3_arr = []
     const tempMax3 = []
+    const tempMin3 = []
     const dates_4_arr = []
     const tempMax4 = []
+    const tempMin4 = []
     const dates_5_arr = []
     const tempMax5 = []
+    const tempMin5 = []
 
-    // const day_1 = new Date(new Date().toISOString())
-    // console.log(day_1)
+    //getting current date for const day_1
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
@@ -73,27 +77,33 @@ const createForecastData = response => {
     const day_5 = new Date(new Date().setHours(96, 0, 0, 0)).toISOString().slice(0, 10)
     console.log(`day_5: ${day_5}`)
 
+    //comparing the day variables to the dt_txt value of each array in order to create arrays containing the same date with their available times.
     const no = 39;
     for (let i = 0; i < no; i++) {
         if (infos[i]["dt_txt"].slice(0, 10) === day_1) {
             dates_1_arr.push(infos[i]["dt_txt"]);
             tempMax1.push(infos[i]["main"]["temp_max"].toFixed(1));
+            tempMin1.push(infos[i]["main"]["temp_min"].toFixed(1));
         } else {
             if (infos[i]["dt_txt"].slice(0, 10) === day_2) {
                 dates_2_arr.push(infos[i]["dt_txt"]);
                 tempMax2.push(infos[i]["main"]["temp_max"].toFixed(1));
+                tempMin2.push(infos[i]["main"]["temp_min"].toFixed(1));
             } else {
                 if (infos[i]["dt_txt"].slice(0, 10) === day_3) {
                     dates_3_arr.push(infos[i]["dt_txt"]);
                     tempMax3.push(infos[i]["main"]["temp_max"].toFixed(1));
+                    tempMin3.push(infos[i]["main"]["temp_min"].toFixed(1));
                 } else {
                     if (infos[i]["dt_txt"].slice(0, 10) === day_4) {
                         dates_4_arr.push(infos[i]["dt_txt"]);
                         tempMax4.push(infos[i]["main"]["temp_max"].toFixed(1));
+                        tempMin4.push(infos[i]["main"]["temp_min"].toFixed(1));
                     } else {
                         if (infos[i]["dt_txt"].slice(0, 10) === day_5) {
                             dates_5_arr.push(infos[i]["dt_txt"]);
                             tempMax5.push(infos[i]["main"]["temp_max"].toFixed(1));
+                            tempMin5.push(infos[i]["main"]["temp_min"].toFixed(1));
                         }
 
                     }
@@ -115,7 +125,12 @@ const createForecastData = response => {
     console.log(`tempMax5: ${tempMax5}`)
 
 
-    function createWeatherDates(dayArray, dayLabel) {
+    function createWeatherDates(dayArray, tempMax, tempMin, dayLabel) {
+        // Check if dayArray is empty
+        if (dayArray.length === 0) {
+            return { [dayLabel]: { date: null, "12am": {}, "3am": {}, "6am": {}, "9am": {}, "12pm": {}, "3pm": {}, "6pm": {}, "9pm": {} } };
+        }
+
         // Extract the date part
         const date = dayArray[0].split(' ')[0];
 
@@ -134,10 +149,17 @@ const createForecastData = response => {
         // Create the day object
         const dayObject = { date };
 
-        // Fill the time slots with empty objects
-        dayArray.forEach(timeString => {
+        // Initialize all slots with empty objects
+        Object.values(timeSlots).forEach(slot => {
+            dayObject[slot] = {};
+        });
+
+        // Fill the time slots with maxTemp and minTemp
+        dayArray.forEach((timeString, index) => {
             const time = timeString.split(' ')[1];
-            dayObject[timeSlots[time]] = {};
+            if (timeSlots[time]) {
+                dayObject[timeSlots[time]] = { maxTemp: tempMax[index], minTemp: tempMin[index] };
+            }
         });
 
         return { [dayLabel]: dayObject };
@@ -145,10 +167,13 @@ const createForecastData = response => {
 
     // Create weather_dates object
     const weather_dates = {
-        ...createWeatherDates(dates_2_arr, 'day2'),
-        ...createWeatherDates(dates_3_arr, 'day3')
-    };
+        ...createWeatherDates(dates_1_arr, tempMax1, tempMin1, 'day1'),
+        ...createWeatherDates(dates_2_arr, tempMax2, tempMin2, 'day2'),
+        ...createWeatherDates(dates_3_arr, tempMax3, tempMin3, 'day2'),
+        ...createWeatherDates(dates_4_arr, tempMax4, tempMin4, 'day2'),
+        ...createWeatherDates(dates_5_arr, tempMax5, tempMin5, 'day2'),
 
+    };
     console.log(weather_dates);
 
 
