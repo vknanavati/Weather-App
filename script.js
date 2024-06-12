@@ -43,22 +43,29 @@ const createForecastData = response => {
     const dataParse = JSON.parse(response);
     const infos = dataParse.list
 
+    const time_sets = dataParse.list
+    console.log('time_sets:', time_sets);
+
     const dates_1_arr = []
     const tempMax1 = []
     const tempMin1 = []
     const iconCode1 = []
+
     const dates_2_arr = []
     const tempMax2 = []
     const tempMin2 = []
     const iconCode2 = []
+
     const dates_3_arr = []
     const tempMax3 = []
     const tempMin3 = []
     const iconCode3 = []
+
     const dates_4_arr = []
     const tempMax4 = []
     const tempMin4 = []
     const iconCode4 = []
+
     const dates_5_arr = []
     const tempMax5 = []
     const tempMin5 = []
@@ -83,37 +90,44 @@ const createForecastData = response => {
     console.log(`day_5: ${day_5}`)
 
     //comparing the day variables to the dt_txt value of each array in order to create arrays containing the same date with their available times.
-    const no = 39;
-    for (let i = 0; i < no; i++) {
-        if (infos[i]["dt_txt"].slice(0, 10) === day_1) {
-            dates_1_arr.push(infos[i]["dt_txt"]);
-            tempMax1.push(infos[i]["main"]["temp_max"].toFixed(1));
-            tempMin1.push(infos[i]["main"]["temp_min"].toFixed(1));
-            iconCode1.push(infos[i]["weather"][0]["icon"]);
+
+
+    for (let i = 0; i < 39; i++) {
+        const weather_dates = infos[i]["dt_txt"].slice(0, 10);
+        const date_timestamp = infos[i]["dt_txt"];
+        const max_temp = infos[i]["main"]["temp_max"].toFixed(1);
+        const min_temp = infos[i]["main"]["temp_min"].toFixed(1);
+        const icon_code = infos[i]["weather"][0]["icon"];
+
+        if (weather_dates === day_1) {
+            dates_1_arr.push(date_timestamp);
+            tempMax1.push(max_temp);
+            tempMin1.push(min_temp);
+            iconCode1.push(icon_code);
         } else {
-            if (infos[i]["dt_txt"].slice(0, 10) === day_2) {
-                dates_2_arr.push(infos[i]["dt_txt"]);
-                tempMax2.push(infos[i]["main"]["temp_max"].toFixed(1));
-                tempMin2.push(infos[i]["main"]["temp_min"].toFixed(1));
-                iconCode2.push(infos[i]["weather"][0]["icon"]);
+            if (weather_dates === day_2) {
+                dates_2_arr.push(date_timestamp);
+                tempMax2.push(max_temp);
+                tempMin2.push(min_temp);
+                iconCode2.push(icon_code);
             } else {
-                if (infos[i]["dt_txt"].slice(0, 10) === day_3) {
-                    dates_3_arr.push(infos[i]["dt_txt"]);
-                    tempMax3.push(infos[i]["main"]["temp_max"].toFixed(1));
-                    tempMin3.push(infos[i]["main"]["temp_min"].toFixed(1));
-                    iconCode3.push(infos[i]["weather"][0]["icon"]);
+                if (weather_dates === day_3) {
+                    dates_3_arr.push(date_timestamp);
+                    tempMax3.push(max_temp);
+                    tempMin3.push(min_temp);
+                    iconCode3.push(icon_code);
                 } else {
-                    if (infos[i]["dt_txt"].slice(0, 10) === day_4) {
-                        dates_4_arr.push(infos[i]["dt_txt"]);
-                        tempMax4.push(infos[i]["main"]["temp_max"].toFixed(1));
-                        tempMin4.push(infos[i]["main"]["temp_min"].toFixed(1));
-                        iconCode4.push(infos[i]["weather"][0]["icon"]);
+                    if (weather_dates === day_4) {
+                        dates_4_arr.push(date_timestamp);
+                        tempMax4.push(max_temp);
+                        tempMin4.push(min_temp);
+                        iconCode4.push(icon_code);
                     } else {
-                        if (infos[i]["dt_txt"].slice(0, 10) === day_5) {
-                            dates_5_arr.push(infos[i]["dt_txt"]);
-                            tempMax5.push(infos[i]["main"]["temp_max"].toFixed(1));
-                            tempMin5.push(infos[i]["main"]["temp_min"].toFixed(1));
-                            iconCode5.push(infos[i]["weather"][0]["icon"]);
+                        if (weather_dates === day_5) {
+                            dates_5_arr.push(date_timestamp);
+                            tempMax5.push(max_temp);
+                            tempMin5.push(min_temp);
+                            iconCode5.push(icon_code);
                         }
 
                     }
@@ -148,6 +162,8 @@ const createForecastData = response => {
 
         // Extract the date part
         const date = dayArray[0].split(' ')[0];
+        // Create the day object
+        const dayObject = { date };
 
         // Define the time slots mapping
         const timeSlots = {
@@ -161,17 +177,11 @@ const createForecastData = response => {
             "21:00:00": "9pm"
         };
 
-        // Create the day object
-        const dayObject = { date };
-
-        // Initialize all slots with empty objects
-        Object.values(timeSlots).forEach(slot => {
-            dayObject[slot] = {};
-        });
-
-        // Fill the time slots with maxTemp and minTemp
+        // Fill each day's array with: min and max temp, icon code, time
         dayArray.forEach((timeString, index) => {
+            // separate date and time
             const time = timeString.split(' ')[1];
+            // if the "3 hour time range" value exists in the time slot key, set the weather info
             if (timeSlots[time]) {
                 dayObject[timeSlots[time]] = { maxTemp: tempMax[index], minTemp: tempMin[index], iconCode: iconCode[index] };
             }
@@ -192,39 +202,25 @@ const createForecastData = response => {
     console.log(weather_dates);
 
 
-    const dates_arr = []
-    const tempMaxArr = []
-    const tempMinArr = []
-    const iconCode = []
-
-    const n = 8;
-    for (let i = 1; i < n; i++) {
-        dates_arr.push(infos[i]["dt_txt"].slice(0, 10));
-        tempMaxArr.push(infos[i]["main"]["temp_max"].toFixed(1));
-        tempMinArr.push(infos[i]["main"]["temp_min"].toFixed(1));
-        iconCode.push(infos[i]["weather"][0]["icon"]);
-    }
-
-
     const html = `
-    <div class="box1">
-    <p id="day1"></p>
-    <p>${weather_dates["day2"]["date"]}</p>
-    <img src= "https://openweathermap.org/img/wn/${weather_dates["day2"]["12pm"]["iconCode"]}@2x.png"/>
-    <p>${weather_dates["day2"]["12pm"]["maxTemp"] + "/" + weather_dates["day2"]["12pm"]["minTemp"] + " °F"}</p>
-    </div>
-    <div class="box2">
-    <p id="day2"></p>
-    <p>${weather_dates["day3"]["date"]}</p>
-    <img src= "https://openweathermap.org/img/wn/${weather_dates["day3"]["12pm"]["iconCode"]}@2x.png"/>
-    <p>${weather_dates["day3"]["12pm"]["maxTemp"] + "/" + weather_dates["day3"]["12pm"]["minTemp"] + " °F"}</p>
-    </div>
-    <div class="box3">
-    <p id="day3"></p>
-    <p>${weather_dates["day4"]["date"]}</p>
-    <img src= "https://openweathermap.org/img/wn/${weather_dates["day4"]["12pm"]["iconCode"]}@2x.png"/>
-    <p>${weather_dates["day4"]["12pm"]["maxTemp"] + "/" + weather_dates["day4"]["12pm"]["minTemp"] + " °F"}</p>
-    </div>
+        <div class="box1">
+            <p id="day1"></p>
+            <p>${weather_dates["day2"]["date"]}</p>
+            <img src= "https://openweathermap.org/img/wn/${weather_dates["day2"]["12pm"]["iconCode"]}@2x.png"/>
+            <p>${weather_dates["day2"]["12pm"]["maxTemp"] + "/" + weather_dates["day2"]["12pm"]["minTemp"] + " °F"}</p>
+        </div>
+        <div class="box2">
+            <p id="day2"></p>
+            <p>${weather_dates["day3"]["date"]}</p>
+            <img src= "https://openweathermap.org/img/wn/${weather_dates["day3"]["12pm"]["iconCode"]}@2x.png"/>
+            <p>${weather_dates["day3"]["12pm"]["maxTemp"] + "/" + weather_dates["day3"]["12pm"]["minTemp"] + " °F"}</p>
+        </div>
+        <div class="box3">
+            <p id="day3"></p>
+            <p>${weather_dates["day4"]["date"]}</p>
+            <img src= "https://openweathermap.org/img/wn/${weather_dates["day4"]["12pm"]["iconCode"]}@2x.png"/>
+            <p>${weather_dates["day4"]["12pm"]["maxTemp"] + "/" + weather_dates["day4"]["12pm"]["minTemp"] + " °F"}</p>
+        </div>
     `
 
     $("#forecast").append(html)
