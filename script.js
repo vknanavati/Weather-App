@@ -15,28 +15,28 @@ const setState = (newItem, currentState = STATE) => {
 
 const createTodayData = response => {
     const dataParse = JSON.parse(response);
-    console.log(dataParse.city.name);
-    const cityName = dataParse.city.name;
-    const iconCode = dataParse.list[0].weather[0].icon;
-    const currentDescription = dataParse.list[0].weather[0].description;
-    const currentTemp = dataParse.list[0].main.temp.toFixed(1) + "° F";
-    const currentDate = dataParse.list[0].dt_txt.slice(0, 10)
-    const resultDate = new Date().toDateString(currentDate)
+    console.log(dataParse)
+    // const cityName = dataParse.city.name;
+    // const iconCode = dataParse.list[0].weather[0].icon;
+    // const currentDescription = dataParse.list[0].weather[0].description;
+    // const currentTemp = dataParse.list[0].main.temp.toFixed(1) + "° F";
+    // const currentDate = dataParse.list[0].dt_txt.slice(0, 10)
+    // const resultDate = new Date().toDateString(currentDate)
 
-    console.log(`current date: ${currentDate}`)
-    console.log(`result date: ${resultDate}`)
+    // console.log(`current date: ${currentDate}`)
+    // console.log(`result date: ${resultDate}`)
 
-    return (`
-        <div class="today-container">
-            <div class="today-result" id="result-city">${cityName}</div>
-            <div class="today-result" id="result-date"></div>
-            <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
-            <br>
-            <br>
-            <div class="today-result" id="result-description">${currentDescription}</div>
-            <div class="today-result" id="result-temp">${currentTemp}</div>
-        </div>
-    `)
+    // return (`
+    //     <div class="today-container">
+    //         <div class="today-result" id="result-city">${cityName}</div>
+    //         <div class="today-result" id="result-date"></div>
+    //         <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
+    //         <br>
+    //         <br>
+    //         <div class="today-result" id="result-description">${currentDescription}</div>
+    //         <div class="today-result" id="result-temp">${currentTemp}</div>
+    //     </div>
+    // `)
 }
 
 const createForecastData = response => {
@@ -205,26 +205,36 @@ const createForecastData = response => {
         iconCode.push(infos[i]["weather"][0]["icon"]);
     }
 
+
     const html = `
-            <div class="box1">
-                <p>${weather_dates["day2"]["date"]}</p>
-                <img src= "https://openweathermap.org/img/wn/${weather_dates["day2"]["12pm"]["iconCode"]}@2x.png"/>
-                <p>${weather_dates["day2"]["12pm"]["maxTemp"] + "/" + weather_dates["day2"]["12pm"]["minTemp"] + " °F"}</p>
-            </div>
-            <div class="box2">
-                <p>${weather_dates["day3"]["date"]}</p>
-                <img src= "https://openweathermap.org/img/wn/${weather_dates["day3"]["12pm"]["iconCode"]}@2x.png"/>
-                <p>${weather_dates["day3"]["12pm"]["maxTemp"] + "/" + weather_dates["day3"]["12pm"]["minTemp"] + " °F"}</p>
-            </div>
-            <div class="box3">
-                <p>${weather_dates["day4"]["date"]}</p>
-                <img src= "https://openweathermap.org/img/wn/${weather_dates["day4"]["12pm"]["iconCode"]}@2x.png"/>
-                <p>${weather_dates["day4"]["12pm"]["maxTemp"] + "/" + weather_dates["day4"]["12pm"]["minTemp"] + " °F"}</p>
-            </div>
+    <div class="box1">
+    <p id="day1"></p>
+    <p>${weather_dates["day2"]["date"]}</p>
+    <img src= "https://openweathermap.org/img/wn/${weather_dates["day2"]["12pm"]["iconCode"]}@2x.png"/>
+    <p>${weather_dates["day2"]["12pm"]["maxTemp"] + "/" + weather_dates["day2"]["12pm"]["minTemp"] + " °F"}</p>
+    </div>
+    <div class="box2">
+    <p id="day2"></p>
+    <p>${weather_dates["day3"]["date"]}</p>
+    <img src= "https://openweathermap.org/img/wn/${weather_dates["day3"]["12pm"]["iconCode"]}@2x.png"/>
+    <p>${weather_dates["day3"]["12pm"]["maxTemp"] + "/" + weather_dates["day3"]["12pm"]["minTemp"] + " °F"}</p>
+    </div>
+    <div class="box3">
+    <p id="day3"></p>
+    <p>${weather_dates["day4"]["date"]}</p>
+    <img src= "https://openweathermap.org/img/wn/${weather_dates["day4"]["12pm"]["iconCode"]}@2x.png"/>
+    <p>${weather_dates["day4"]["12pm"]["maxTemp"] + "/" + weather_dates["day4"]["12pm"]["minTemp"] + " °F"}</p>
+    </div>
     `
 
     $("#forecast").append(html)
 
+    let dayDate = new Date();
+    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    document.getElementById('day1').innerHTML = weekday[(dayDate.getDay() + 1) % 7];
+    document.getElementById('day2').innerHTML = weekday[(dayDate.getDay() + 2) % 7];
+    document.getElementById('day3').innerHTML = weekday[(dayDate.getDay() + 3) % 7];
 
     // let html = "";
     // for (let i = 0; i < 7; ++i) {
@@ -288,6 +298,20 @@ const render = () => {
 };
 /* ---------- AJAX REQUEST ---------- */
 
+const getTodayData = (query) => {
+    const options = {
+        type: 'GET',
+        "url": `http://api.openweathermap.org/data/2.5/weather?q=${query}&units=imperial&appid=${API_KEY}`,
+        success: data => {
+            console.log(data);
+            renderCurrentWeather(JSON.stringify(data))
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    }
+    $.ajax(options)
+}
 
 const getGeoData = (query) => {
     console.log('user city:', query)
@@ -327,7 +351,7 @@ const getWeather = (data) => {
         "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log('weather data: ', data);
-            renderCurrentWeather(JSON.stringify(data))
+            // renderCurrentWeather(JSON.stringify(data))
             renderSevenDay(JSON.stringify(data));
         },
         error: function (err) {
@@ -344,6 +368,7 @@ const inputHandler = event => {
     const cityName = $(event.currentTarget).find('.city').val();
     console.log('cityName: ', cityName);
     getGeoData(cityName);
+    getTodayData(cityName)
     setState({ route: 'todayPage' });
 }
 
