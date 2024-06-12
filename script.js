@@ -16,27 +16,27 @@ const setState = (newItem, currentState = STATE) => {
 const createTodayData = response => {
     const dataParse = JSON.parse(response);
     console.log(dataParse)
-    // const cityName = dataParse.city.name;
-    // const iconCode = dataParse.list[0].weather[0].icon;
-    // const currentDescription = dataParse.list[0].weather[0].description;
-    // const currentTemp = dataParse.list[0].main.temp.toFixed(1) + "° F";
-    // const currentDate = dataParse.list[0].dt_txt.slice(0, 10)
-    // const resultDate = new Date().toDateString(currentDate)
 
-    // console.log(`current date: ${currentDate}`)
-    // console.log(`result date: ${resultDate}`)
+    const cityName = dataParse.name;
+    const iconCode = dataParse.weather[0].icon;
+    const currentDescription = dataParse.weather[0].description;
+    const currentTemp = dataParse.main.temp.toFixed(1) + "° F";
 
-    // return (`
-    //     <div class="today-container">
-    //         <div class="today-result" id="result-city">${cityName}</div>
-    //         <div class="today-result" id="result-date"></div>
-    //         <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
-    //         <br>
-    //         <br>
-    //         <div class="today-result" id="result-description">${currentDescription}</div>
-    //         <div class="today-result" id="result-temp">${currentTemp}</div>
-    //     </div>
-    // `)
+    const unixTime = dataParse.dt;
+    const myDate = new Date(unixTime * 1000);
+    const currentDate = myDate.toDateString().slice(0, 10);
+
+    return (`
+        <div class="today-container">
+            <div class="today-result" id="result-city">${cityName}</div>
+            <div class="today-result" id="result-date">${currentDate}</div>
+            <img src="https://openweathermap.org/img/wn/${iconCode}@2x.png"/>
+            <br>
+            <br>
+            <div class="today-result" id="result-description">${currentDescription}</div>
+            <div class="today-result" id="result-temp">${currentTemp}</div>
+        </div>
+    `)
 }
 
 const createForecastData = response => {
@@ -66,11 +66,6 @@ const createForecastData = response => {
     const tempMin4 = []
     const iconCode4 = []
 
-    const dates_5_arr = []
-    const tempMax5 = []
-    const tempMin5 = []
-    const iconCode5 = []
-
     //getting current date for const day_1
     const today = new Date();
     const year = today.getFullYear();
@@ -86,11 +81,8 @@ const createForecastData = response => {
     console.log(`day_3: ${day_3}`)
     const day_4 = new Date(new Date().setHours(72, 0, 0, 0)).toISOString().slice(0, 10)
     console.log(`day_4: ${day_4}`)
-    const day_5 = new Date(new Date().setHours(96, 0, 0, 0)).toISOString().slice(0, 10)
-    console.log(`day_5: ${day_5}`)
 
     //comparing the day variables to the dt_txt value of each array in order to create arrays containing the same date with their available times.
-
 
     for (let i = 0; i < 39; i++) {
         const weather_dates = infos[i]["dt_txt"].slice(0, 10);
@@ -122,14 +114,6 @@ const createForecastData = response => {
                         tempMax4.push(max_temp);
                         tempMin4.push(min_temp);
                         iconCode4.push(icon_code);
-                    } else {
-                        if (weather_dates === day_5) {
-                            dates_5_arr.push(date_timestamp);
-                            tempMax5.push(max_temp);
-                            tempMin5.push(min_temp);
-                            iconCode5.push(icon_code);
-                        }
-
                     }
                 }
             }
@@ -139,19 +123,19 @@ const createForecastData = response => {
     console.log(`dates_2_arr: ${dates_2_arr}`)
     console.log(`dates_3_arr: ${dates_3_arr}`)
     console.log(`dates_4_arr: ${dates_4_arr}`)
-    console.log(`dates_5_arr: ${dates_5_arr}`)
+
 
     console.log(`tempMax1: ${tempMax1}`)
     console.log(`tempMax2: ${tempMax2}`)
     console.log(`tempMax3: ${tempMax3}`)
     console.log(`tempMax4: ${tempMax4}`)
-    console.log(`tempMax5: ${tempMax5}`)
+
 
     console.log(`iconCode1: ${iconCode1}`)
     console.log(`iconCode2: ${iconCode2}`)
     console.log(`iconCode3: ${iconCode3}`)
     console.log(`iconCode4: ${iconCode4}`)
-    console.log(`iconCode5: ${iconCode5}`)
+
 
 
     function createWeatherDates(dayArray, tempMax, tempMin, iconCode, dayLabel) {
@@ -195,8 +179,7 @@ const createForecastData = response => {
         ...createWeatherDates(dates_1_arr, tempMax1, tempMin1, iconCode1, 'day1'),
         ...createWeatherDates(dates_2_arr, tempMax2, tempMin2, iconCode2, 'day2'),
         ...createWeatherDates(dates_3_arr, tempMax3, tempMin3, iconCode3, 'day3'),
-        ...createWeatherDates(dates_4_arr, tempMax4, tempMin4, iconCode4, 'day4'),
-        ...createWeatherDates(dates_5_arr, tempMax5, tempMin5, iconCode5, 'day5'),
+        ...createWeatherDates(dates_4_arr, tempMax4, tempMin4, iconCode4, 'day4')
 
     };
     console.log(weather_dates);
@@ -228,22 +211,9 @@ const createForecastData = response => {
     let dayDate = new Date();
     const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    document.getElementById('day1').innerHTML = weekday[(dayDate.getDay() + 1) % 7];
-    document.getElementById('day2').innerHTML = weekday[(dayDate.getDay() + 2) % 7];
-    document.getElementById('day3').innerHTML = weekday[(dayDate.getDay() + 3) % 7];
-
-    // let html = "";
-    // for (let i = 0; i < 7; ++i) {
-
-    //     html += `
-    //         <div class="box${i}">
-    //             <p>${dates_arr[i]}</p>
-    //             <img src= "https://openweathermap.org/img/wn/${iconCode[i]}@2x.png"/>
-    //             <p>${tempMaxArr[i]}/${tempMinArr[i]}°F</p>
-    //         </div>
-    //     `
-    // }
-    // $("#forecast").append(html)
+    $('#day1').html(weekday[(dayDate.getDay() + 1) % 7]);
+    $('#day2').html(weekday[(dayDate.getDay() + 2) % 7]);
+    $('#day3').html(weekday[(dayDate.getDay() + 3) % 7]);
 }
 
 /* ---------- TEMPLATES ---------- */
@@ -256,8 +226,11 @@ const landingPage = (`
 
 const searchWeatherPage = (`
     <div class="search-container">
-        <form class="search-box">
-            <input class="city" id="myText" type="text" />
+        <form class="search-box" id="validate-form">
+            <label for="userCity">City:</label>
+            <input class="city" id="myText" type="text" required />
+            <label for="userState">State Code: </label> 
+            <input class="state" id="myStatet" type="text" required/>
             <button type="submit" id="mySubmit">Enter</button>
         </form>
     </div>
@@ -303,18 +276,21 @@ const getTodayData = (query) => {
             renderCurrentWeather(JSON.stringify(data))
         },
         error: function (err) {
-            console.log(err)
+            console.log(err);
+            const errorMessage = '<div class = "error">Error! check your state and/or city spelling</div> <img src="sadCloud.png" alt="crying-cloud" id="weather-image">'
+            $("#validate-form").append(errorMessage)
         }
     }
     $.ajax(options)
 }
 
-const getGeoData = (query) => {
+const getGeoData = (query, query2) => {
     console.log('user city:', query)
+
 
     const options = {
         type: 'GET',
-        "url": `https://api.openweathermap.org/geo/1.0/direct?q=${query},CT,USA&units=imperial&appid=${API_KEY}`,
+        "url": `https://api.openweathermap.org/geo/1.0/direct?q=${query},${query2},USA,&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log(data);
             const resp = {
@@ -326,6 +302,7 @@ const getGeoData = (query) => {
         },
         error: function (err) {
             console.log(err);
+
         }
     }
     $.ajax(options)
@@ -347,7 +324,6 @@ const getWeather = (data) => {
         "url": `https://api.openweathermap.org/data/2.5/forecast?lat=${valueLat}&lon=${valueLon}&units=imperial&appid=${API_KEY}`,
         success: data => {
             console.log('weather data: ', data);
-            // renderCurrentWeather(JSON.stringify(data))
             renderSevenDay(JSON.stringify(data));
         },
         error: function (err) {
@@ -362,8 +338,9 @@ const getWeather = (data) => {
 const inputHandler = event => {
     event.preventDefault();
     const cityName = $(event.currentTarget).find('.city').val();
+    const cityState = $(event.currentTarget).find('.state').val();
     console.log('cityName: ', cityName);
-    getGeoData(cityName);
+    getGeoData(cityName, cityState);
     getTodayData(cityName)
     setState({ route: 'todayPage' });
 }
