@@ -23,12 +23,22 @@
     margin: 100px auto;
     background: skyblue;
     text-align: center;
-    line-height: 70px;
+    line-height: 50px;
     font-size: 50px;
 }
 
 #result-city {
-    padding-bottom: 100px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+#result-date {
+    font-size: 37px;
+    padding-bottom: 40px;
+}
+
+#result-description {
+    padding-bottom: 20px;
 }
 
 .forecast-container {
@@ -61,4 +71,8 @@
     color: white;
     text-align: center;
 
+}
+
+.error {
+    color: red;
 }
